@@ -32,6 +32,7 @@
     <!-- Add your actions here -->
     <action id="vpgenerator.generate" class="ru.surfstudio.vpgenerator.plugin.GenerateAction" text="VP Generate"
             description="Generate View and Presenter templates.">
+      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl V" second-keystroke="shift ctrl P"/>
     </action>
   </actions>
