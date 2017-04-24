@@ -1,36 +1,65 @@
 package ru.surfstudio.vpgenerator.plugin;
 
+import com.intellij.ide.fileTemplates.FileTemplate;
+import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  */
 public class GenerateAction extends AnAction {
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
-        PsiElement a = e.getData(LangDataKeys.PSI_ELEMENT);
-        if (!(a instanceof PsiDirectory)) {
+    public void actionPerformed(AnActionEvent actionEvent) {
+        PsiElement psiDirectory = actionEvent.getData(LangDataKeys.PSI_ELEMENT);
+        if (!(psiDirectory instanceof PsiDirectory)) {
             return;
         }
 
-        JavaDirectoryService.getInstance().createClass((PsiDirectory) a, "Presenter");
-        JavaDirectoryService.getInstance().createClass((PsiDirectory) a, "View");
-        JavaDirectoryService.getInstance().createInterface((PsiDirectory) a, "Component");
+        TemplateManager tm = new TemplateManager("Hello");
+
+        createPresenterFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
+        createViewFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
+        createComponentFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
     }
+
+    private void createPresenterFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
+        FileTemplate template = FileTemplateManager.getInstance(project)
+                .addTemplate(TemplateManager.PRESENTER_TEMPLATE_NAME, "java");
+        template.setText(TemplateManager.PRESENTER_TEMPLATE_TEXT);
+
+        JavaDirectoryService.getInstance().createClass(psiDirectory,
+                tm.getPresenterName(),
+                TemplateManager.PRESENTER_TEMPLATE_NAME,
+                true,
+                tm.getPresenterMap());
+    }
+
+    private void createViewFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
+        FileTemplate template = FileTemplateManager.getInstance(project)
+                .addTemplate(TemplateManager.VIEW_TEMPLATE_NAME, "java");
+        template.setText(TemplateManager.VIEW_TEMPLATE_TEXT);
+
+        JavaDirectoryService.getInstance().createClass(psiDirectory,
+                tm.getViewName(),
+                TemplateManager.VIEW_TEMPLATE_NAME,
+                true,
+                tm.getViewMap());
+    }
+
+    private void createComponentFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
+        FileTemplate template = FileTemplateManager.getInstance(project)
+                .addTemplate(TemplateManager.COMPONENT_TEMPLATE_NAME, "java");
+        template.setText(TemplateManager.COMPONENT_TEMPLATE_TEXT);
+
+        JavaDirectoryService.getInstance().createClass(psiDirectory,
+                tm.getComponentName(),
+                TemplateManager.COMPONENT_TEMPLATE_NAME,
+                true,
+                tm.getComponentMap());
+    }
+
 }
