@@ -1,10 +1,11 @@
 package ru.surfstudio.vpgenerator.plugin;
 
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ComponentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
@@ -20,7 +21,11 @@ public class GenerateAction extends AnAction {
             return;
         }
 
+        TemplateComponent templateComponent = ApplicationManager.getApplication()
+                .getComponent(TemplateComponent.class);
+
         Project project = actionEvent.getProject();
+        templateComponent.createTemplateIfNeed(project);
 
         String name = Messages.showInputDialog(actionEvent.getProject(),
                 "Enter screen name",
@@ -28,16 +33,12 @@ public class GenerateAction extends AnAction {
 
         TemplateManager tm = new TemplateManager(name);
 
-        createPresenterFile(tm, project, (PsiDirectory) psiDirectory);
-        createViewFile(tm, project, (PsiDirectory) psiDirectory);
-        createComponentFile(tm, project, (PsiDirectory) psiDirectory);
+        createPresenterFile(tm, (PsiDirectory) psiDirectory);
+        createViewFile(tm, (PsiDirectory) psiDirectory);
+        createComponentFile(tm, (PsiDirectory) psiDirectory);
     }
 
-    private void createPresenterFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
-        FileTemplate template = FileTemplateManager.getInstance(project)
-                .addTemplate(TemplateManager.PRESENTER_TEMPLATE_NAME, "java");
-        template.setText(TemplateManager.PRESENTER_TEMPLATE_TEXT);
-
+    private void createPresenterFile(TemplateManager tm, PsiDirectory psiDirectory) {
         JavaDirectoryService.getInstance().createClass(psiDirectory,
                 tm.getPresenterName(),
                 TemplateManager.PRESENTER_TEMPLATE_NAME,
@@ -45,11 +46,7 @@ public class GenerateAction extends AnAction {
                 tm.getPresenterMap());
     }
 
-    private void createViewFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
-        FileTemplate template = FileTemplateManager.getInstance(project)
-                .addTemplate(TemplateManager.VIEW_TEMPLATE_NAME, "java");
-        template.setText(TemplateManager.VIEW_TEMPLATE_TEXT);
-
+    private void createViewFile(TemplateManager tm, PsiDirectory psiDirectory) {
         JavaDirectoryService.getInstance().createClass(psiDirectory,
                 tm.getViewName(),
                 TemplateManager.VIEW_TEMPLATE_NAME,
@@ -57,11 +54,7 @@ public class GenerateAction extends AnAction {
                 tm.getViewMap());
     }
 
-    private void createComponentFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
-        FileTemplate template = FileTemplateManager.getInstance(project)
-                .addTemplate(TemplateManager.COMPONENT_TEMPLATE_NAME, "java");
-        template.setText(TemplateManager.COMPONENT_TEMPLATE_TEXT);
-
+    private void createComponentFile(TemplateManager tm, PsiDirectory psiDirectory) {
         JavaDirectoryService.getInstance().createClass(psiDirectory,
                 tm.getComponentName(),
                 TemplateManager.COMPONENT_TEMPLATE_NAME,

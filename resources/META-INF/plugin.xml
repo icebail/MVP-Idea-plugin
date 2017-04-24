@@ -37,4 +37,9 @@
     </action>
   </actions>
 
+    <application-components>
+        <component>
+            <implementation-class>ru.surfstudio.vpgenerator.plugin.TemplateComponent</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>
