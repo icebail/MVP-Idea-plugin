@@ -20,15 +20,17 @@ public class GenerateAction extends AnAction {
             return;
         }
 
+        Project project = actionEvent.getProject();
+
         String name = Messages.showInputDialog(actionEvent.getProject(),
                 "Enter screen name",
                 "MVP name", Messages.getQuestionIcon());
 
         TemplateManager tm = new TemplateManager(name);
 
-        createPresenterFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
-        createViewFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
-        createComponentFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
+        createPresenterFile(tm, project, (PsiDirectory) psiDirectory);
+        createViewFile(tm, project, (PsiDirectory) psiDirectory);
+        createComponentFile(tm, project, (PsiDirectory) psiDirectory);
     }
 
     private void createPresenterFile(TemplateManager tm, Project project, PsiDirectory psiDirectory) {
