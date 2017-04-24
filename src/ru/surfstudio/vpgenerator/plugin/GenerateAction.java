@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 
 /**
@@ -19,7 +20,11 @@ public class GenerateAction extends AnAction {
             return;
         }
 
-        TemplateManager tm = new TemplateManager("Hello");
+        String name = Messages.showInputDialog(actionEvent.getProject(),
+                "Enter screen name",
+                "MVP name", Messages.getQuestionIcon());
+
+        TemplateManager tm = new TemplateManager(name);
 
         createPresenterFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
         createViewFile(tm, actionEvent.getProject(), (PsiDirectory) psiDirectory);
