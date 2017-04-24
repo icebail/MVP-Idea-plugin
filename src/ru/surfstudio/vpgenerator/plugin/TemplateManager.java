@@ -21,7 +21,7 @@ class TemplateManager {
                     "}";
 
     static final String VIEW_TEMPLATE_TEXT =
-            "import android.os.Bundle; \n import javax.inject.Inject; \n" +
+            "import android.os.Bundle; \nimport javax.inject.Inject; \n" +
                     "public class ${NAME} extends BaseActivityView {\n" +
                     "    @Inject\n" +
                     "    ${PresenterClass} presenter;\n" +
